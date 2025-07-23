@@ -31,11 +31,10 @@ void deletion() {
     else {
         printf("Deleted element is %d\n", queue[front]);
         front++;
-        if (front > rear) { // Reset the queue if empty
-            front = rear = -1;
+      
         }
     }
-}
+
 
 void display() {
     if (front == -1 || front > rear) {
@@ -65,10 +64,10 @@ int main() {
                 break;
             case 3:
                 display();
-                break;
+                break; 
             case 4:
                 printf("existing..");
-break;
+                break;
             default:
                 printf("Invalid choice");
         }
@@ -76,6 +75,8 @@ break;
 
     return 0;
 }
+
+
 
 
 
