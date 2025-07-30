@@ -6,22 +6,20 @@ int front = -1;
 int rear = -1;
 
 void insertion() {
-    int value;
-    if (front == -1 && rear == -1) {
-        front = rear = 0;
-        printf("Enter the number: ");
-        scanf("%d", &value);
-        queue[rear] = value;
-    }
-    else if (rear == size - 1) {
+    if (rear == size - 1) {
         printf("Overflow\n");
+        return;
     }
-    else {
-        rear++;
-        printf("Enter the number: ");
-        scanf("%d", &value);
-        queue[rear] = value;
+
+    int value;
+    printf("Enter the number: ");
+    scanf("%d", &value);
+
+    if (front == -1) { // Queue was empty
+        front = 0;
     }
+    rear++;
+    queue[rear] = value;
 }
 
 void deletion() {
@@ -30,11 +28,15 @@ void deletion() {
     }
     else {
         printf("Deleted element is %d\n", queue[front]);
-        front++;
-      
+        
+        if (front == rear) {
+            front = rear = -1;
+        }
+        else {
+            front++; 
         }
     }
-
+}
 
 void display() {
     if (front == -1 || front > rear) {
@@ -47,11 +49,12 @@ void display() {
         printf("\n");
     }
 }
+
 int main() {
     int choice;
 
     do {
-        printf("enter 1 for insertion and 2 for deletion and 3 for display and 4 for existing\n");
+        printf("\n1. Insertion\n2. Deletion\n3. Display\n4. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -66,20 +69,12 @@ int main() {
                 display();
                 break; 
             case 4:
-                printf("existing..");
+                printf("Exiting...\n");
                 break;
             default:
-                printf("Invalid choice");
+                printf("Invalid choice\n");
         }
-    } while (choice!=4);
+    } while (choice != 4);
 
     return 0;
 }
-
-
-
-
-
-
-
-
