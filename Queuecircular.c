@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define MAX 5
+#define MAX 3
 
 int queue[MAX];
 int front = -1, rear = -1;
@@ -13,7 +13,7 @@ void enqueue() {
     printf("Enter item to insert: ");
     scanf("%d", &item);
 
-    if (front == -1) { // queue was empty
+    if (front == -1) { 
         front = 0;
     }
     rear = (rear + 1) % MAX;
@@ -36,7 +36,7 @@ void dequeue() {
     }
 }
 
-e
+
 void display() {
     if (front == -1) {
         printf("Queue is empty\n");
