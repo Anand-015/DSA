@@ -62,17 +62,9 @@ int main() {
         k++;
     }
     
-    int firstTermPrinted = 0;
-    for (i = 0; i < k; i++) {
-        if (poly3[i].coeff == 0) continue;  
-        
-        if (firstTermPrinted)
-            printf("+");
-        
-        printf("%d(x)^%d", poly3[i].coeff, poly3[i].exp);
-        firstTermPrinted = 1;
-    }
-    printf("\n");
+   for(i=0;i<k-1;i++)
+ 			printf("%d(x)^%d + ",poly3[i].coeff,poly3[i].exp);
+ 	printf("%d(x)^%d",poly3[i].coeff,poly3[i].exp);
     
     return 0;
 }
