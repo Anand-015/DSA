@@ -1,76 +1,72 @@
 #include <stdio.h>
-
-char stack[100];
+#include <string.h>
+#define MAX 100
+char stack[MAX];
 int top = -1;
-
-void push(char c) {
-    if (top < 100 - 1) {
-        top++;
-        stack[top] = c;
-    }
+void push(char ch) {
+    if (top < MAX - 1)
+        stack[++top] = ch;
 }
-
 char pop() {
-    if (top >= 0) {
+    if (top >= 0)
         return stack[top--];
-    }
     return '\0';
 }
-
 char peek() {
     if (top >= 0)
         return stack[top];
     return '\0';
 }
-
-int isOperator(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
+int isOperand(char ch) {
+    return ((ch >= 'a' && ch <= 'z') ||(ch >= 'A' && ch <= 'Z') ||(ch >= '0' && ch <= '9'));
 }
-
+int isOperator(char ch) {
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
+}
 int precedence(char op) {
-    if (op == '^') return 3;
-    if (op == '*' || op == '/') return 2;
-    if (op == '+' || op == '-') return 1;
-    return 0;
+    switch (op) {
+        case '^': return 3;
+        case '*': case '/': return 2;
+        case '+': case '-': return 1;
+        default: return 0;
+    }
 }
-
-int isOperand(char c) {
-    return (c >= 'A' && c <= 'Z');  
+int isRightAssociative(char op) {
+    return (op == '^');
 }
-
-void infixtoPostfix(char infix[], char postfix[]) {
-    int i = 0, j = 0;
+void infixToPostfix(char infix[], char postfix[]) {
+    int i, k = 0;
     char ch;
-    
-    while ((ch = infix[i++]) != '\0') {
+    for (i = 0; i < strlen(infix); i++) {
+        ch = infix[i];
+        if (ch == ' ') continue;
         if (isOperand(ch)) {
-            postfix[j++] = ch; 
-        } else if (ch == '(') {
-            push(ch); 
-        } else if (ch == ')') {
-            while (peek() != '(' && top != -1) {
-                postfix[j++] = pop();
+            postfix[k++] = ch;
+        }
+        else if (ch == '(') {
+            push(ch);
+        }
+        else if (ch == ')') {
+            while (peek() != '(' && top != -1)
+                postfix[k++] = pop();
+            pop();
+        }
+        else if (isOperator(ch)) {
+            while (isOperator(peek()) &&((precedence(ch) < precedence(peek())) ||(precedence(ch) == precedence(peek()) && !isRightAssociative(ch)))) {
+                postfix[k++] = pop();
             }
-            pop(); 
-        } else if (isOperator(ch)) {
-            while (top != -1 && precedence(peek()) >= precedence(ch)) {
-                postfix[j++] = pop();
-            }
-            push(ch); 
+            push(ch);
         }
     }
     while (top != -1) {
-        postfix[j++] = pop();
+        postfix[k++] = pop();
     }
-    postfix[j] = '\0';
+    postfix[k] = '\0';
 }
-
-int main() {
-    char infix[100], postfix[100];
-    printf("Enter infix expression: ");
+void main() {
+    char infix[MAX], postfix[MAX];
+    printf("Enter infix expression :");
     scanf("%s", infix);
-    infixtoPostfix(infix, postfix);
+    infixToPostfix(infix, postfix);
     printf("Postfix expression: %s\n", postfix);
-
-    return 0;
 }
