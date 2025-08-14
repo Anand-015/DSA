@@ -1,142 +1,108 @@
 #include <stdio.h>
-
-// Structure for one term in the sparse matrix
-struct Term {
-    int row;  // row index
-    int col;  // column index
-    int val;  // non-zero value
-};
-
-// Function to read a sparse matrix
-void readSparse(struct Term mat[]) {
-    int n; // number of non-zero elements
-    printf("Enter number of rows: ");
-    scanf("%d", &mat[0].row);
-
-    printf("Enter number of columns: ");
-    scanf("%d", &mat[0].col);
-
-    printf("Enter number of non-zero elements: ");
-    scanf("%d", &mat[0].val);
-
-    n = mat[0].val;
-
-    for (int i = 1; i <= n; i++) {
-        printf("Enter row, column, value for element %d: ", i);
-        scanf("%d %d %d", &mat[i].row, &mat[i].col, &mat[i].val);
-    }
-}
-
-// Function to display a sparse matrix
-void displaySparse(struct Term mat[]) {
-    int n = mat[0].val; // number of non-zero terms
-    printf("\nRow\tCol\tVal\n");
-    for (int i = 0; i <= n; i++) {
-        printf("%d\t%d\t%d\n", mat[i].row, mat[i].col, mat[i].val);
-    }
-}
-
-// Function to add two sparse matrices A and B → store in C
-void addSparse(struct Term A[], struct Term B[], struct Term C[]) {
-    if (A[0].row != B[0].row || A[0].col != B[0].col) {
-        printf("\nAddition not possible!\n");
-        C[0].val = 0;
-        return;
-    }
-
-    int i = 1, j = 1, k = 1;
-    while (i <= A[0].val && j <= B[0].val) {
-        if ((A[i].row < B[j].row) || 
-           (A[i].row == B[j].row && A[i].col < B[j].col)) {
-            C[k++] = A[i++];
-        }
-        else if ((B[j].row < A[i].row) || 
-                (B[j].row == A[i].row && B[j].col < A[i].col)) {
-            C[k++] = B[j++];
-        }
-        else { // Same position
-            C[k].row = A[i].row;
-            C[k].col = A[i].col;
-            C[k].val = A[i].val + B[j].val;
-            i++; j++; k++;
-        }
-    }
-
-    // Copy remaining terms of A
-    while (i <= A[0].val) {
-        C[k++] = A[i++];
-    }
-
-    // Copy remaining terms of B
-    while (j <= B[0].val) {
-        C[k++] = B[j++];
-    }
-
-    // Set header
-    C[0].row = A[0].row;
-    C[0].col = A[0].col;
-    C[0].val = k - 1;
-}
-
-// Function to transpose a sparse matrix M into T
-void transposeSparse(struct Term M[], struct Term T[]) {
-    int n = M[0].val;
-    T[0].row = M[0].col;
-    T[0].col = M[0].row;
-    T[0].val = n;
-
-    int k = 1;
-    for (int i = 0; i < M[0].col; i++) {
-        for (int j = 1; j <= n; j++) {
-            if (M[j].col == i) {
-                T[k].row = M[j].col;
-                T[k].col = M[j].row;
-                T[k].val = M[j].val;
-                k++;
-            }
-        }
-    }
-}
-
 int main() {
-    struct Term A[50], B[50], C[100], T[50];
-    int choice;
-
-    printf("Enter first sparse matrix (A):\n");
-    readSparse(A);
-
-    printf("\nEnter second sparse matrix (B):\n");
-    readSparse(B);
-
-    addSparse(A, B, C);
-
-    printf("\nMatrix A:");
-    displaySparse(A);
-    printf("\nMatrix B:");
-    displaySparse(B);
-    printf("\nMatrix C (A+B):");
-    displaySparse(C);
-
-    // Menu for transpose
-    do {
-        printf("\n--- Transpose Menu ---\n");
-        printf("1. Transpose A\n");
-        printf("2. Transpose B\n");
-        printf("3. Transpose C\n");
-        printf("4. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        if (choice >= 1 && choice <= 3) {
-            if (choice == 1) transposeSparse(A, T);
-            else if (choice == 2) transposeSparse(B, T);
-            else transposeSparse(C, T);
-
-            printf("\nTranspose Result:\n");
-            displaySparse(T);
+    int a[10][10], b[10][10];
+    int A[100][3], B[100][3], C[100][3], R[100][3];
+    int r, c, i, j, k;
+    printf("Enter number of rows and columns: ");
+    scanf("%d%d", &r, &c);
+    printf("Enter the elements of matrix A:\n");
+    for(i = 0; i < r; i++) {
+        for(j = 0; j < c; j++) {
+            scanf("%d", &a[i][j]);
+        }}  
+    printf("Enter the elements of matrix B:\n");
+    for(i = 0; i < r; i++) {
+        for(j = 0; j < c; j++) {
+            scanf("%d", &b[i][j]);
+        }}
+    k = 1;
+    A[0][0] = r;
+    A[0][1] = c;
+    for(i = 0; i < r; i++) {
+        for(j = 0; j < c; j++) {
+            if(a[i][j] != 0) {
+                A[k][0] = i;
+                A[k][1] = j;
+                A[k][2] = a[i][j];
+                k++;
+           }}}
+    A[0][2] = k - 1;  
+    int m = 1;
+    B[0][0] = r;
+    B[0][1] = c;
+    for(i = 0; i < r; i++) {
+        for(j = 0; j < c; j++) {
+            if(b[i][j] != 0) {
+                B[m][0] = i;
+                B[m][1] = j;
+                B[m][2] = b[i][j];
+                m++;
+            }}}
+    B[0][2] = m - 1;  
+     printf("Sparse matrix A (row, column, value):\n");
+       for(i = 0; i <= A[0][2]; i++) {
+          printf("%d %d %d\n", A[i][0], A[i][1], A[i][2]);}
+     printf("Sparse matrix B (row, column, value):\n");
+       for(i = 0; i <= B[0][2]; i++) {
+          printf("%d %d %d\n", B[i][0], B[i][1], B[i][2]);}
+    i = 1;
+    j = 1;
+    k = 1;    
+    while(i <= A[0][2] && j <= B[0][2]) {
+        if(A[i][0] == B[j][0] && A[i][1] == B[j][1]) {
+            C[k][0] = A[i][0];
+            C[k][1] = A[i][1];
+            C[k][2] = A[i][2] + B[j][2];  
+            i++;
+            j++;
+            k++;
         }
-
-    } while (choice != 4);
-
+        else if(A[i][0] < B[j][0] || (A[i][0] == B[j][0] && A[i][1] < B[j][1])) {
+            C[k][0] = A[i][0];
+            C[k][1] = A[i][1];
+            C[k][2] = A[i][2];
+            i++;
+            k++;
+        }
+        else {
+            C[k][0] = B[j][0];
+            C[k][1] = B[j][1];
+            C[k][2] = B[j][2];
+            j++;
+            k++;
+        }}
+    while(i <= A[0][2]) {
+        C[k][0] = A[i][0];
+        C[k][1] = A[i][1];
+        C[k][2] = A[i][2];
+        i++;
+        k++;}  
+    while(j <= B[0][2]) {
+        C[k][0] = B[j][0];
+        C[k][1] = B[j][1];
+        C[k][2] = B[j][2];
+        j++;
+        k++;}
+    C[0][0] = r;
+    C[0][1] = c;
+    C[0][2] = k - 1;  
+         printf("Sum of matrices A and B:\n");
+    for(i = 0; i <= C[0][2]; i++) {
+        printf("%d %d %d\n", C[i][0], C[i][1], C[i][2]);
+    }
+    R[0][0] = C[0][1];  
+    R[0][1] = C[0][0];  
+    R[0][2] = C[0][2];
+   
+    k = 1;
+    for(i = 1; i <= C[0][2]; i++) {
+        R[k][0] = C[i][1];
+        R[k][1] = C[i][0];
+        R[k][2] = C[i][2];
+        k++;}
+    printf("Transpose of the sum of matrices A and B:\n");
+    for(i = 0; i <= R[0][2]; i++) {
+        printf("%d %d %d\n", R[i][0], R[i][1], R[i][2]);
+    }
     return 0;
 }
